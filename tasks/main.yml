@@ -25,4 +25,5 @@
   - "{{ groups['remote-backup'] }}"
 
 - name: Delete created copies
-  shell: rm -rfv "{{ local_backup_directory }}/{{ timestamp_exec }}"
+  file: path="{{ local_backup_directory }}/{{ timestamp_exec }}" state=absent
+  become: yes
