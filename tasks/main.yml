@@ -10,11 +10,9 @@
 
 - name: Create TimeStamp folder to store the backup
   file: state=directory path="{{ local_backup_directory }}/{{ timestamp_exec }}"
-  become: yes
 
 - name: Dump all DB files
   script: dump_db.sh "{{ euca_version_family }}" "{{ local_backup_directory }}/{{ timestamp_exec }}"
-  become: yes
 
 - name: Copy to remote locations
   command: rsync -avzrt --progress "{{ local_backup_directory }}/{{ timestamp_exec }}" "{{ remote_user }}"@"{{ item }}":"{{ remote_backup_directory }}/"
@@ -23,4 +21,3 @@
 
 - name: Delete created copies on CLC
   file: path="{{ local_backup_directory }}/{{ timestamp_exec }}" state=absent
-  become: yes
