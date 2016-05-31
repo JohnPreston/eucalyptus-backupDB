@@ -22,3 +22,6 @@
   command: rsync -avzrt --progress "{{ local_backup_directory }}/{{ timestamp_exec }}" "{{ remote_user }}"@"{{ item }}":"{{ remote_backup_directory }}/"
   with_items:
   - "{{ groups['remote-backup'] }}"
+
+- name: Delete created copies
+  shell: rm -rfv "{{ local_backup_directory }}/{{ timestamp_exec }}"
