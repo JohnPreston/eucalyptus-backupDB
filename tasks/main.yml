@@ -1,0 +1,24 @@
+---
+# tasks file for eucalyptus-backupDB
+
+
+- name: TimeStamp
+  set_fact: timestamp_exec="{{ ansible_date_time.date }}-{{ ansible_date_time.hour }}-{{ ansible_date_time.minute }}-{{ ansible_date_time.tz }}"
+
+- name: What time is it
+  debug: msg="{{ timestamp_exec }}"
+
+- name: Create TimeStamp folder to store the backup
+  file: state=directory path="{{ local_backup_directory }}/{{ timestamp_exec }}"
+
+- name: Dump all DB files
+  script: dump_db.sh "{{ euca_version_family }}" "{{ local_backup_directory }}/{{ timestamp_exec }}"
+  become: yes
+
+#- name: Copy dumps to remote location
+#  copy: src="{{ local_local_backup_directory }}/{{ timestamp_exec }}" dest="{{ remote_backup_directory }}"
+
+- name: Copy to remote locations
+  command: rsync -avzrt --progress "{{ local_backup_directory }}/{{ timestamp_exec }}" "{{ remote_user }}"@"{{ item }}":"{{ remote_backup_directory }}/"
+  with_items:
+  - "{{ groups['remote-backup'] }}"
