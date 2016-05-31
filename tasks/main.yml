@@ -16,14 +16,11 @@
   script: dump_db.sh "{{ euca_version_family }}" "{{ local_backup_directory }}/{{ timestamp_exec }}"
   become: yes
 
-#- name: Copy dumps to remote location
-#  copy: src="{{ local_local_backup_directory }}/{{ timestamp_exec }}" dest="{{ remote_backup_directory }}"
-
 - name: Copy to remote locations
   command: rsync -avzrt --progress "{{ local_backup_directory }}/{{ timestamp_exec }}" "{{ remote_user }}"@"{{ item }}":"{{ remote_backup_directory }}/"
   with_items:
   - "{{ groups['remote-backup'] }}"
 
-- name: Delete created copies
+- name: Delete created copies on CLC
   file: path="{{ local_backup_directory }}/{{ timestamp_exec }}" state=absent
   become: yes
