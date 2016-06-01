@@ -10,9 +10,16 @@
 
 - name: Create TimeStamp folder to store the backup
   file: state=directory path="{{ local_backup_directory }}/{{ timestamp_exec }}"
+  when:
+  - not dump_backend
 
 - name: Dump all DB files
   script: dump_db.sh "{{ euca_version_family }}" "{{ local_backup_directory }}/{{ timestamp_exec }}"
+
+- name: Dump all DB files with backends
+  script: dump_db.sh "{{ euca_version_family }}" "{{ local_backup_directory }}/{{ timestamp_exec }}" --backend
+  when:
+  - dump_backend
 
 - name: Copy to remote locations
   command: rsync -avzrt --progress "{{ local_backup_directory }}/{{ timestamp_exec }}" "{{ remote_user }}"@"{{ item }}":"{{ remote_backup_directory }}/"

@@ -4,3 +4,4 @@
 euca_version_family: 4
 local_backup_directory: /tmp
 remote_backup_directory: /var/tmp
+dump_backend: False
