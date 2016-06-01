@@ -10,11 +10,11 @@
 
 - name: Create TimeStamp folder to store the backup
   file: state=directory path="{{ local_backup_directory }}/{{ timestamp_exec }}"
-  when:
-  - not dump_backend
 
 - name: Dump all DB files
   script: dump_db.sh "{{ euca_version_family }}" "{{ local_backup_directory }}/{{ timestamp_exec }}"
+  when:
+  - not dump_backend
 
 - name: Dump all DB files with backends
   script: dump_db.sh "{{ euca_version_family }}" "{{ local_backup_directory }}/{{ timestamp_exec }}" --backend
